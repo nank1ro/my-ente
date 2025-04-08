@@ -1,0 +1,7 @@
+ente.mariuti.com {
+    reverse_proxy web:3000
+}
+
+ente-backend.mariuti.com {
+    reverse_proxy museum:8080
+}

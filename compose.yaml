@@ -1,12 +1,12 @@
+version: "3.8"
+
 services:
   museum:
     build:
       context: server
       args:
         GIT_COMMIT: local
-    ports:
-      - 8081:8080 # API
-      - 2112:2112 # Prometheus metrics
+    # Remove port mapping, Caddy will proxy this
     depends_on:
       postgres:
         condition: service_healthy
@@ -36,14 +36,14 @@ services:
   web:
     build:
       context: web
-    ports:
-      - 8082:3000
-      - 8083:3001
+    # Remove port mapping, Caddy will proxy this
     depends_on:
       museum:
         condition: service_healthy
     env_file:
       - ./.credentials.env
+    networks:
+      - internal
 
   postgres:
     image: postgres:12
@@ -63,8 +63,28 @@ services:
       - postgres-data:/var/lib/postgresql/data
     networks:
       - internal
+
+  caddy:
+    image: caddy:latest
+    ports:
+      - "80:80"
+      - "443:443"
+    restart: unless-stopped
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile
+      - caddy_data:/data
+      - caddy_config:/config
+    networks:
+      - internal
+    depends_on:
+      - web
+      - museum
+
 volumes:
   custom-logs:
   postgres-data:
+  caddy_data:
+  caddy_config:
+
 networks:
   internal:
