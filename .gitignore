@@ -4,3 +4,5 @@
 
 # macOS
 .DS_Store
+
+!.credentials.env
