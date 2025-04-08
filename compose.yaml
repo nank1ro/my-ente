@@ -1,12 +1,9 @@
-version: "3.8"
-
 services:
   museum:
     build:
       context: server
       args:
         GIT_COMMIT: local
-    # Remove port mapping, Caddy will proxy this
     depends_on:
       postgres:
         condition: service_healthy
@@ -36,7 +33,6 @@ services:
   web:
     build:
       context: web
-    # Remove port mapping, Caddy will proxy this
     depends_on:
       museum:
         condition: service_healthy
@@ -64,27 +60,9 @@ services:
     networks:
       - internal
 
-  caddy:
-    image: caddy:latest
-    ports:
-      - "80:80"
-      - "443:443"
-    restart: unless-stopped
-    volumes:
-      - ./Caddyfile:/etc/caddy/Caddyfile
-      - caddy_data:/data
-      - caddy_config:/config
-    networks:
-      - internal
-    depends_on:
-      - web
-      - museum
-
 volumes:
   custom-logs:
   postgres-data:
-  caddy_data:
-  caddy_config:
 
 networks:
   internal:
