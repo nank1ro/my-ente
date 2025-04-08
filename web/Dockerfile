@@ -55,8 +55,8 @@ EXPOSE 3002
 EXPOSE 3003
 EXPOSE 3004
 
-ENV ENTE_API_ORIGIN=http://localhost:8080
-ENV ENTE_ALBUMS_ORIGIN=https://localhost:3002
+ENV ENTE_API_ORIGIN=http://localhost:8081
+ENV ENTE_ALBUMS_ORIGIN=https://localhost:8082
 
 COPY <<EOF /docker-entrypoint.d/90-replace-ente-env.sh
 find /out -name '*.js' |

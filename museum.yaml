@@ -1,0 +1,28 @@
+key:
+  encryption: M9fa+WzOXM6NXSRPADgWdfhRtuY3URdEyaUq7g64B9c=
+  hash: kJk/284VJGe9AbPWfhR2Q0VbRcbv30iE87g1K0D0j0Hjfw6I7cb4vVHf5ok2e1ccez2iVPLfSsRa8MsL08VYkg==
+
+jwt:
+  secret: zc49IazvEgUco2PUCW78CZ0ugflOCOz3l88Jvt3-L30=
+
+db:
+  host: postgres
+  port: 5432
+  name: ente_db
+  user: pguser
+  password: pgpass
+
+s3:
+  are_local_buckets: false
+  # For some self-hosted S3 deployments you (e.g. Minio) you might need to disable bucket subdomains
+  use_path_style_urls: true
+  # The key must be named like so
+  b2-eu-cen:
+    key: 003cf1d3d8b84540000000006
+    secret: K003BxrzSakznAYlhQ8+4GqZq1dhrBE
+    endpoint: s3.eu-central-003.backblazeb2.com
+    region: eu-central-003
+    bucket: ente-nank1ro
+# The same value as the one specified in ALBUMS_ENDPOINT
+apps:
+  public-albums: http://localhost:8082

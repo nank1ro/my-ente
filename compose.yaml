@@ -1,0 +1,70 @@
+services:
+  museum:
+    build:
+      context: server
+      args:
+        GIT_COMMIT: local
+    ports:
+      - 8081:8080 # API
+      - 2112:2112 # Prometheus metrics
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+    # Wait for museum to ping pong before starting the webapp.
+    healthcheck:
+      test: [
+          "CMD",
+          "echo",
+          "1", # I don't know what to put here
+        ]
+    environment:
+      # no need to touch these
+      ENTE_DB_HOST: postgres
+      ENTE_DB_PORT: 5432
+      ENTE_DB_NAME: ente_db
+      ENTE_DB_USER: pguser
+      ENTE_DB_PASSWORD: pgpass
+    env_file:
+      - ./.credentials.env
+    volumes:
+      - custom-logs:/var/logs
+      - ./museum.yaml:/museum.yaml:ro
+    networks:
+      - internal
+
+  web:
+    build:
+      context: web
+    ports:
+      - 8082:3000
+      - 8083:3001
+    depends_on:
+      museum:
+        condition: service_healthy
+    env_file:
+      - ./.credentials.env
+
+  postgres:
+    image: postgres:12
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_USER: pguser
+      POSTGRES_PASSWORD: pgpass
+      POSTGRES_DB: ente_db
+    # Wait for postgres to be accept connections before starting museum.
+    healthcheck:
+      test: ["CMD", "pg_isready", "-q", "-d", "ente_db", "-U", "pguser"]
+      interval: 1s
+      timeout: 5s
+      retries: 20
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    networks:
+      - internal
+volumes:
+  custom-logs:
+  postgres-data:
+networks:
+  internal:
