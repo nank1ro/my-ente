@@ -1,7 +1,7 @@
 services:
   museum:
     ports:
-      - 8080:8080
+      - 8085:8080
     build:
       context: server
       args:
