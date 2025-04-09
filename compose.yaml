@@ -62,6 +62,47 @@ services:
       - traefik.http.routers.https-0-ko484w8wso80sg4c4sg8sw8s-museum.tls=true
       - traefik.http.services.http-0-ko484w8wso80sg4c4sg8sw8s-museum.loadbalancer.server.port=8080 # Corrected to 8080
       - traefik.http.services.https-0-ko484w8wso80sg4c4sg8sw8s-museum.loadbalancer.server.port=8080 # Corrected to 8080
+  postgres:
+    image: "postgres:12"
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: pguser
+      POSTGRES_PASSWORD: pgpass
+      POSTGRES_DB: ente_db
+      COOLIFY_BRANCH: '"main"'
+      COOLIFY_RESOURCE_UUID: ko484w8wso80sg4c4sg8sw8s
+      COOLIFY_CONTAINER_NAME: postgres-ko484w8wso80sg4c4sg8sw8s-103708637951
+    healthcheck:
+      test:
+        - CMD
+        - pg_isready
+        - "-q"
+        - "-d"
+        - ente_db
+        - "-U"
+        - pguser
+      interval: 1s
+      timeout: 5s
+      retries: 20
+    volumes:
+      - "ko484w8wso80sg4c4sg8sw8s_postgres-data:/var/lib/postgresql/data"
+    networks:
+      internal: null
+      ko484w8wso80sg4c4sg8sw8s: null
+    container_name: postgres-ko484w8wso80sg4c4sg8sw8s-103708637951
+    restart: unless-stopped
+    labels:
+      - coolify.managed=true
+      - coolify.version=4.0.0-beta.406
+      - coolify.applicationId=6
+      - coolify.type=application
+      - coolify.name=postgres-ko484w8wso80sg4c4sg8sw8s-103708637951
+      - coolify.resourceName=nank1roente
+      - coolify.projectName=enteio
+      - coolify.serviceName=nank1roente
+      - coolify.environmentName=production
+      - coolify.pullRequestId=0
 volumes:
   ko484w8wso80sg4c4sg8sw8s_custom-logs:
     name: ko484w8wso80sg4c4sg8sw8s_custom-logs
