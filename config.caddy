@@ -1,3 +1,0 @@
-ente.mariuti.com {
-    reverse_proxy museum:8080
-}

@@ -24,8 +24,8 @@ services:
       COOLIFY_BRANCH: '"main"'
       COOLIFY_RESOURCE_UUID: ko484w8wso80sg4c4sg8sw8s
       COOLIFY_CONTAINER_NAME: museum-ko484w8wso80sg4c4sg8sw8s-103708625005
-      COOLIFY_URL: "https://ente.mariuti.com:8085"
-      COOLIFY_FQDN: "ente.mariuti.com:8085"
+      COOLIFY_URL: "https://ente-backend.mariuti.com:8085"
+      COOLIFY_FQDN: "ente-backend.mariuti.com:8085"
     env_file:
       - ./.credentials.env
     volumes:
@@ -52,11 +52,11 @@ services:
       - traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https
       - traefik.http.routers.http-0-ko484w8wso80sg4c4sg8sw8s-museum.entryPoints=http
       - traefik.http.routers.http-0-ko484w8wso80sg4c4sg8sw8s-museum.middlewares=redirect-to-https
-      - "traefik.http.routers.http-0-ko484w8wso80sg4c4sg8sw8s-museum.rule=Host(`ente.mariuti.com`) && PathPrefix(`/`)"
+      - "traefik.http.routers.http-0-ko484w8wso80sg4c4sg8sw8s-museum.rule=Host(`ente-backend.mariuti.com`) && PathPrefix(`/`)"
       - traefik.http.routers.http-0-ko484w8wso80sg4c4sg8sw8s-museum.service=http-0-ko484w8wso80sg4c4sg8sw8s-museum
       - traefik.http.routers.https-0-ko484w8wso80sg4c4sg8sw8s-museum.entryPoints=https
       - traefik.http.routers.https-0-ko484w8wso80sg4c4sg8sw8s-museum.middlewares=gzip
-      - "traefik.http.routers.https-0-ko484w8wso80sg4c4sg8sw8s-museum.rule=Host(`ente.mariuti.com`) && PathPrefix(`/`)"
+      - "traefik.http.routers.https-0-ko484w8wso80sg4c4sg8sw8s-museum.rule=Host(`ente-backend.mariuti.com`) && PathPrefix(`/`)"
       - traefik.http.routers.https-0-ko484w8wso80sg4c4sg8sw8s-museum.service=https-0-ko484w8wso80sg4c4sg8sw8s-museum
       - traefik.http.routers.https-0-ko484w8wso80sg4c4sg8sw8s-museum.tls.certresolver=letsencrypt
       - traefik.http.routers.https-0-ko484w8wso80sg4c4sg8sw8s-museum.tls=true
