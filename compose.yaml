@@ -1,7 +1,7 @@
 services:
   museum:
     ports:
-      - 8085:8080
+      - "8085:8080" # Keep this if you want to access directly via host:8085, otherwise remove for Traefik-only access
     build:
       context: server
       args:
@@ -9,62 +9,68 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
-
-    # Wait for museum to ping pong before starting the webapp.
     healthcheck:
-      test: [
-          "CMD",
-          "echo",
-          "1", # I don't know what to put here
-        ]
+      test:
+        - CMD
+        - echo
+        - "1"
     environment:
-      # no need to touch these
       ENTE_DB_HOST: postgres
       ENTE_DB_PORT: 5432
       ENTE_DB_NAME: ente_db
       ENTE_DB_USER: pguser
       ENTE_DB_PASSWORD: pgpass
+      GIT_COMMIT: local
+      COOLIFY_BRANCH: '"main"'
+      COOLIFY_RESOURCE_UUID: ko484w8wso80sg4c4sg8sw8s
+      COOLIFY_CONTAINER_NAME: museum-ko484w8wso80sg4c4sg8sw8s-103708625005
+      COOLIFY_URL: "https://ente.mariuti.com:8085"
+      COOLIFY_FQDN: "ente.mariuti.com:8085"
     env_file:
       - ./.credentials.env
     volumes:
-      - custom-logs:/var/logs
-      - ./museum.yaml:/museum.yaml:ro
+      - "ko484w8wso80sg4c4sg8sw8s_custom-logs:/var/logs"
+      - "/data/coolify/applications/ko484w8wso80sg4c4sg8sw8s/museum.yaml:/museum.yaml"
     networks:
-      - internal
-
-  # web:
-  #   build:
-  #     context: web
-  #   depends_on:
-  #     museum:
-  #       condition: service_healthy
-  #   env_file:
-  #     - ./.credentials.env
-  #   networks:
-  #     - internal
-
-  postgres:
-    image: postgres:12
-    ports:
-      - 5432:5432
-    environment:
-      POSTGRES_USER: pguser
-      POSTGRES_PASSWORD: pgpass
-      POSTGRES_DB: ente_db
-    # Wait for postgres to be accept connections before starting museum.
-    healthcheck:
-      test: ["CMD", "pg_isready", "-q", "-d", "ente_db", "-U", "pguser"]
-      interval: 1s
-      timeout: 5s
-      retries: 20
-    volumes:
-      - postgres-data:/var/lib/postgresql/data
-    networks:
-      - internal
-
+      internal: null
+      ko484w8wso80sg4c4sg8sw8s: null
+    container_name: museum-ko484w8wso80sg4c4sg8sw8s-103708625005
+    restart: unless-stopped
+    labels:
+      - coolify.managed=true
+      - coolify.version=4.0.0-beta.406
+      - coolify.applicationId=6
+      - coolify.type=application
+      - coolify.name=museum-ko484w8wso80sg4c4sg8sw8s-103708625005
+      - coolify.resourceName=nank1roente
+      - coolify.projectName=enteio
+      - coolify.serviceName=nank1roente
+      - coolify.environmentName=production
+      - coolify.pullRequestId=0
+      - traefik.enable=true
+      - traefik.http.middlewares.gzip.compress=true
+      - traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https
+      - traefik.http.routers.http-0-ko484w8wso80sg4c4sg8sw8s-museum.entryPoints=http
+      - traefik.http.routers.http-0-ko484w8wso80sg4c4sg8sw8s-museum.middlewares=redirect-to-https
+      - "traefik.http.routers.http-0-ko484w8wso80sg4c4sg8sw8s-museum.rule=Host(`ente.mariuti.com`) && PathPrefix(`/`)"
+      - traefik.http.routers.http-0-ko484w8wso80sg4c4sg8sw8s-museum.service=http-0-ko484w8wso80sg4c4sg8sw8s-museum
+      - traefik.http.routers.https-0-ko484w8wso80sg4c4sg8sw8s-museum.entryPoints=https
+      - traefik.http.routers.https-0-ko484w8wso80sg4c4sg8sw8s-museum.middlewares=gzip
+      - "traefik.http.routers.https-0-ko484w8wso80sg4c4sg8sw8s-museum.rule=Host(`ente.mariuti.com`) && PathPrefix(`/`)"
+      - traefik.http.routers.https-0-ko484w8wso80sg4c4sg8sw8s-museum.service=https-0-ko484w8wso80sg4c4sg8sw8s-museum
+      - traefik.http.routers.https-0-ko484w8wso80sg4c4sg8sw8s-museum.tls.certresolver=letsencrypt
+      - traefik.http.routers.https-0-ko484w8wso80sg4c4sg8sw8s-museum.tls=true
+      - traefik.http.services.http-0-ko484w8wso80sg4c4sg8sw8s-museum.loadbalancer.server.port=8080 # Corrected to 8080
+      - traefik.http.services.https-0-ko484w8wso80sg4c4sg8sw8s-museum.loadbalancer.server.port=8080 # Corrected to 8080
 volumes:
-  custom-logs:
-  postgres-data:
-
+  ko484w8wso80sg4c4sg8sw8s_custom-logs:
+    name: ko484w8wso80sg4c4sg8sw8s_custom-logs
+  ko484w8wso80sg4c4sg8sw8s_postgres-data:
+    name: ko484w8wso80sg4c4sg8sw8s_postgres-data
 networks:
-  internal:
+  internal: null
+  ko484w8wso80sg4c4sg8sw8s:
+    name: ko484w8wso80sg4c4sg8sw8s
+    external: true
+configs: {}
+secrets: {}
