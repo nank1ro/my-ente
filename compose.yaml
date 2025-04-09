@@ -32,16 +32,16 @@ services:
     networks:
       - internal
 
-  web:
-    build:
-      context: web
-    depends_on:
-      museum:
-        condition: service_healthy
-    env_file:
-      - ./.credentials.env
-    networks:
-      - internal
+  # web:
+  #   build:
+  #     context: web
+  #   depends_on:
+  #     museum:
+  #       condition: service_healthy
+  #   env_file:
+  #     - ./.credentials.env
+  #   networks:
+  #     - internal
 
   postgres:
     image: postgres:12
